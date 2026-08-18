@@ -13,7 +13,11 @@ logger = logging.getLogger(__name__)
 async def archive(request):
     path = request.app['path']
     delay = request.app['delay']
-    archive_hash = request.match_info.get('archive_hash', "Anonymous")
+    archive_hash = request.match_info.get('archive_hash')
+
+    if not archive_hash:
+        raise web.HTTPNotFound(text="Архив не указан")
+    
     cwd = f'{path}/{archive_hash}/'
 
     if not os.path.exists(cwd):
